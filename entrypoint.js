@@ -14,28 +14,22 @@ runAudit();
 
 async function runAudit() {
   try {
+    tools.log(`### Action triggered on event: ${event} ###`);
+
     // 1. An authenticated instance of `@octokit/rest`, a GitHub API SDK
     const octokit = tools.github;
 
-    await octokit.repos.createCommitComment({
-      owner,
-      repo,
-      sha,
-      body:
-        "Running webpagetest docker container. this could take a while so sit back and relax!"
-    });
-
     // initialize webPagetest
-    const wpt = new webPageTest(
-      process.env.WEBPAGETEST_SERVER_URL || "www.webpagetest.org",
-      process.env.WEBPAGETEST_API_KEY
-    );
+    // const wpt = new webPageTest(
+    //   process.env.WEBPAGETEST_SERVER_URL || "www.webpagetest.org",
+    //   process.env.WEBPAGETEST_API_KEY
+    // );
 
     // 2. run tests and save results
-    const webpagetestResults = await runWebPagetest(wpt);
+    // const webpagetestResults = await runWebPagetest(wpt);
 
     // 3. convert results to markdown
-    const finalResultsAsMarkdown = convertToMarkdown(webpagetestResults);
+    // const finalResultsAsMarkdown = convertToMarkdown(webpagetestResults);
 
     // 4. print results to as commit comment
     const { owner, repo } = {
@@ -43,11 +37,18 @@ async function runAudit() {
       ref: `${payload.ref}`
     };
 
+    // await octokit.repos.createCommitComment({
+    //   owner,
+    //   repo,
+    //   sha,
+    //   body: finalResultsAsMarkdown
+    // });
+
     await octokit.repos.createCommitComment({
       owner,
       repo,
       sha,
-      body: finalResultsAsMarkdown
+      body: "Comment test! "
     });
 
     tools.exit.success("Succesfully run!");
