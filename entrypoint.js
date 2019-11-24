@@ -14,6 +14,9 @@ runAudit();
 
 async function runAudit() {
   try {
+    // 1. An authenticated instance of `@octokit/rest`, a GitHub API SDK
+    const octokit = tools.github;
+
     await octokit.repos.createCommitComment({
       owner,
       repo,
@@ -21,11 +24,6 @@ async function runAudit() {
       body:
         "Running webpagetest docker container. this could take a while so sit back and relax!"
     });
-
-    tools.log(`### Action triggered on event: ${event} ###`);
-
-    // 1. An authenticated instance of `@octokit/rest`, a GitHub API SDK
-    const octokit = tools.github;
 
     // initialize webPagetest
     const wpt = new webPageTest(
