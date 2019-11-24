@@ -14,39 +14,37 @@ runAudit();
 
 async function runAudit() {
   try {
-    if (event === "push") {
-      tools.log("### Action triggered! ###");
+    tools.log(`### Action triggered on event: ${event} ###`);
 
-      // 1. An authenticated instance of `@octokit/rest`, a GitHub API SDK
-      const octokit = tools.github;
+    // 1. An authenticated instance of `@octokit/rest`, a GitHub API SDK
+    const octokit = tools.github;
 
-      // initialize webPagetest
-      const wpt = new webPageTest(
-        process.env.WEBPAGETEST_SERVER_URL || "www.webpagetest.org",
-        process.env.WEBPAGETEST_API_KEY
-      );
+    // initialize webPagetest
+    const wpt = new webPageTest(
+      process.env.WEBPAGETEST_SERVER_URL || "www.webpagetest.org",
+      process.env.WEBPAGETEST_API_KEY
+    );
 
-      // 2. run tests and save results
-      const webpagetestResults = await runWebPagetest(wpt);
+    // 2. run tests and save results
+    const webpagetestResults = await runWebPagetest(wpt);
 
-      // 3. convert results to markdown
-      const finalResultsAsMarkdown = convertToMarkdown(webpagetestResults);
+    // 3. convert results to markdown
+    const finalResultsAsMarkdown = convertToMarkdown(webpagetestResults);
 
-      // 4. print results to as commit comment
-      const { owner, repo } = {
-        ...tools.context.repo,
-        ref: `${payload.ref}`
-      };
+    // 4. print results to as commit comment
+    const { owner, repo } = {
+      ...tools.context.repo,
+      ref: `${payload.ref}`
+    };
 
-      await octokit.repos.createCommitComment({
-        owner,
-        repo,
-        sha,
-        body: finalResultsAsMarkdown
-      });
+    await octokit.repos.createCommitComment({
+      owner,
+      repo,
+      sha,
+      body: finalResultsAsMarkdown
+    });
 
-      tools.exit.success("Succesfully run!");
-    }
+    tools.exit.success("Succesfully run!");
   } catch (error) {
     tools.log.error(`Something went wrong ${error}!`);
   }
@@ -138,8 +136,8 @@ function convertToMarkdown(result) {
       }
     })
     .join("")}
-  
-  ## Filmstrip Repeat View 
+
+  ## Filmstrip Repeat View
   ${data.median.repeatView.videoFrames
     .map((item, index) => {
       if (index === 0) {
@@ -187,7 +185,7 @@ FirstView  | ${data.median.firstView.firstPaint} | ${
     data.median.firstView.visualComplete
   } | ${data.median.firstView.SpeedIndex} | ${
     data.median.firstView.loadTime
-  } |  
+  } |
 RepeatView | ${data.median.repeatView.firstPaint} | ${
     data.median.repeatView.firstContentfulPaint
   } | ${data.median.repeatView.firstMeaningfulPaint} | ${
@@ -196,14 +194,14 @@ RepeatView | ${data.median.repeatView.firstPaint} | ${
     data.median.repeatView.visualComplete
   } | ${data.median.repeatView.SpeedIndex} | ${
     data.median.repeatView.loadTime
-  } |  
+  } |
   ## Median Waterfall
   ### FirstView
   ![alt text](${data.median.firstView.images.waterfall})
   ### RepeatView
   ![alt text](${data.median.repeatView.images.waterfall})
 
-  ## Median Requests 
+  ## Median Requests
   ### FirstView
   | File | FileSize |
   |----------|----------|
