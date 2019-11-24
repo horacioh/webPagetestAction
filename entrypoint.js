@@ -14,6 +14,14 @@ runAudit();
 
 async function runAudit() {
   try {
+    await octokit.repos.createCommitComment({
+      owner,
+      repo,
+      sha,
+      body:
+        "Running webpagetest docker container. this could take a while so sit back and relax!"
+    });
+
     tools.log(`### Action triggered on event: ${event} ###`);
 
     // 1. An authenticated instance of `@octokit/rest`, a GitHub API SDK
@@ -183,9 +191,7 @@ FirstView  | ${data.median.firstView.firstPaint} | ${
     data.median.firstView["lighthouse.Performance.interactive"]
   } | ${data.median.firstView.TTFB} | ${data.median.firstView.render} | ${
     data.median.firstView.visualComplete
-  } | ${data.median.firstView.SpeedIndex} | ${
-    data.median.firstView.loadTime
-  } |
+  } | ${data.median.firstView.SpeedIndex} | ${data.median.firstView.loadTime} |
 RepeatView | ${data.median.repeatView.firstPaint} | ${
     data.median.repeatView.firstContentfulPaint
   } | ${data.median.repeatView.firstMeaningfulPaint} | ${
