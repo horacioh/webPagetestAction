@@ -47,7 +47,7 @@ async function runAudit() {
     await octokit.repos.createCommitComment({
       owner,
       repo,
-      sha,
+      commit_sha: sha,
       body: "Comment test! "
     });
 
